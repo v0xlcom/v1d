@@ -1,0 +1,30 @@
+[package]
+title = "v1d"
+version = "0.1.0"
+description = "GPU video (v1d.cor + v1d.pv + v1d.tl + v1d.ups)"
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.kit.loop-default" = {}
+"omni.kit.window.console" = {}
+"v1d.cor" = {}
+"v1d.pv" = {}
+"v1d.tl" = {}
+"v1d.ups" = {}
+"v1d.rnd" = {}
+
+[settings]
+exts."v1d.pv".ui.console_anchor = "Preview"
+# Console opens beside Preview (right dock). Layout: ui_workspace_default.json
+exts."omni.kit.window.console".startup.show_window = true
+
+[settings.app]
+fastShutdown = false
+
+[settings.app.window]
+title = "v1d"
+iconPath = "${app}/data/v1d-256.png"
+imagePath = "${app}/data/v1d-512.png"
+
+[settings.app.renderer]
+multiGpu.enabled = false

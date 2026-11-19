@@ -1,0 +1,18 @@
+[package]
+title = "v1d.tl"
+version = "0.1.0"
+description = "v1d timeline (ruler, zoom, pan, transport, arrows, S4 fixtures)"
+category = "v1d"
+
+[dependencies]
+"omni.ui" = {}
+"omni.ui.scene" = {}
+"omni.kit.menu.utils" = {}
+"v1d.cor" = {}
+
+[[python.module]]
+name = "v1d.tl"
+
+[settings]
+exts."v1d.tl".window_title = "Timeline"
+exts."v1d.tl".zoom_percent = 100.0

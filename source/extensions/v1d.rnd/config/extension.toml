@@ -1,0 +1,16 @@
+[package]
+title = "v1d.rnd"
+version = "0.1.0"
+description = "Composition render window (NVENC via ffmpeg mux, GPU frames from engine)"
+category = "v1d"
+
+[dependencies]
+"omni.ui" = {}
+"omni.kit.menu.utils" = {}
+"v1d.cor" = {}
+
+[[python.module]]
+name = "v1d.rnd"
+
+[settings]
+exts."v1d.rnd".window_title = "Render"

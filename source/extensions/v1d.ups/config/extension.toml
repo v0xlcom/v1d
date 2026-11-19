@@ -1,0 +1,17 @@
+[package]
+title = "v1d.ups"
+version = "0.1.0"
+description = "Upscaler window — frame snapshot, external engines, wipe preview"
+category = "v1d"
+
+[dependencies]
+"omni.ui" = {}
+"omni.kit.menu.utils" = {}
+"v1d.cor" = {}
+
+[[python.module]]
+name = "v1d.ups"
+
+[settings]
+exts."v1d.ups".window_title = "Upscaler"
+exts."v1d.ups".root = "../v1d_ups"

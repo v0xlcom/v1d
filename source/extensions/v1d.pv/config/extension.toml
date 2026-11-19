@@ -1,0 +1,34 @@
+[package]
+title = "v1d.pv"
+version = "0.1.0"
+description = "v1d video preview and shell UI (layout, reload, dev benches)"
+category = "v1d"
+
+[dependencies]
+"omni.ui" = {}
+"omni.kit.menu.utils" = {}
+"omni.kit.window.console" = {}
+"v1d.cor" = {}
+
+[[python.module]]
+name = "v1d.pv"
+
+[settings]
+exts."v1d.pv".selftest = false
+exts."v1d.pv".a0_audio_spike = false
+exts."v1d.pv".a0_audio_spike_clip = ""
+exts."v1d.pv".a0_audio_spike_seconds = 5.0
+exts."v1d.pv".s2_bench = false
+exts."v1d.pv".window_title = "Preview"
+exts."v1d.pv".ui.workspace_persist = true
+exts."v1d.pv".ui.use_bundled_workspace_default = true
+exts."v1d.pv".ui.console_anchor = "Preview"
+exts."v1d.pv".ui.timeline_anchor = "Preview"
+exts."v1d.pv".ui.timeline_dock_position = "BOTTOM"
+exts."v1d.pv".ui.timeline_dock_ratio = 0.22
+exts."v1d.pv".ui.console_dock_position = "RIGHT"
+exts."v1d.pv".ui.console_dock_ratio = 0.34
+exts."v1d.pv".ui.console_hidden_by_default = false
+exts."v1d.pv".ui.capture_workspace_default = false
+exts."v1d.pv".ui.capture_workspace_then_quit = false
+exts."v1d.pv".ui.reload_parallel_log_terminal = true

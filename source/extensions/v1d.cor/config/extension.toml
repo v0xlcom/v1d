@@ -1,0 +1,33 @@
+[package]
+title = "v1d.cor"
+version = "0.1.0"
+description = "GPU scrub engine (NVDEC + CUDA), session, headless serve, shared Kit window helpers"
+category = "v1d"
+
+[core]
+reloadable = false
+
+[dependencies]
+"omni.ui" = {}
+"omni.kit.menu.utils" = {}
+
+[[python.module]]
+name = "v1d.ngn"
+
+[[python.module]]
+name = "v1d.kit"
+
+[[python.module]]
+name = "v1d.cor"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+recursive = false
+
+[settings]
+exts."v1d.cor".cuda_device = 0
+exts."v1d.cor".cache_vram_mb = 0
+exts."v1d.cor".proxy_height = 270
+exts."v1d.cor".proxy_vram_mb = 256
+exts."v1d.cor".snap_idle_ms = 120
+exts."v1d.cor".clip = ""

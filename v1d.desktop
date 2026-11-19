@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=v1d
+GenericName=Video scrubber
+Comment=GPU-native H.264/HEVC scrubbing (Omniverse Kit)
+Exec=./scripts/launch-v1d-terminal.sh
+Path=.
+Icon=./ico/v1d.png
+Terminal=true
+StartupNotify=true
+StartupWMClass=v1d
+Categories=AudioVideo;Video;
+Keywords=video;scrub;nvdec;kit;

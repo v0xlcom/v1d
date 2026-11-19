@@ -1,0 +1,215 @@
+{
+  "rule": "Call v1d_sources with the task words. Open only the matched rows. Local Kit 110.3 stubs outrank docs.omniverse.nvidia.com pages marked latest. v1d_lookup_symbol still gates any new omni.* or carb.* call: a miss means do not invent the symbol. Do not copy NVIDIA/skills or NVIDIA-Omniverse trees into this repo.",
+  "sources": [
+    {
+      "id": "plan-tl-zoom",
+      "kind": "local-spec",
+      "local": "PLAN_06_ZOOM.md",
+      "use_when": ["overview", "viewport", "timeline zoom", "pan rectangle", "navigator"],
+      "note": "Overview viewport replaces the pan slider. Wheel is 5% steps (not zoom(2)/zoom(0.5)); contract docs/UI_EXTENSIONS.md. SCROLL_UP/SCROLL_DOWN often repeat; each callback is still one notch."
+    },
+    {
+      "id": "plan-tl-gui",
+      "kind": "local-spec",
+      "local": "_archive/PLAN_05_TL_GUI.md",
+      "use_when": ["timeline", "ruler", "zoom", "pan", "transport", "play button"],
+      "note": "Timeline ruler and transport (done). Pan slider may be removed when PLAN_06 lands."
+    },
+    {
+      "id": "plan-tl-slider",
+      "kind": "local-spec",
+      "local": "_archive/PLAN_04_TL_SLIDER.md",
+      "use_when": ["timeline", "slider", "arrow", "playhead", "frame step", "hold"],
+      "note": "Shuttle is done. Tap is one frame. Hold either arrow plays at fps_num/fps_den. Release settles exact."
+    },
+    {
+      "id": "local-omni-ui",
+      "kind": "local-stub",
+      "local": "_build/linux-x86_64/release/extscache/omni.ui*/omni/ui/_ui.pyi",
+      "use_when": ["omni.ui", "slider", "intslider", "window", "widget", "keyboard", "key", "preview", "byteimage"],
+      "note": "Kit 110.3 omni.ui stubs. Window.set_key_pressed_fn(key, mod, pressed) is down/up. This file wins over the public omni.ui pages."
+    },
+    {
+      "id": "local-carb-input",
+      "kind": "local-stub",
+      "local": "_build/linux-x86_64/release/kit/kernel/py/carb/input.pyi",
+      "use_when": ["keyboard", "key", "arrow", "repeat", "key_press", "key_repeat"],
+      "note": "KeyboardEventType: KEY_PRESS, KEY_REPEAT, KEY_RELEASE. Use this when a tap must be distinct from auto-repeat."
+    },
+    {
+      "id": "omni-ui-overview",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/Overview.html",
+      "use_when": ["omni.ui", "widget", "layout"],
+      "note": "Public overview. Version is latest, not pinned to Kit 110.3. Confirm any call in the local stub."
+    },
+    {
+      "id": "omni-ui-window",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/omni.ui/omni.ui.Window.html",
+      "use_when": ["window", "keyboard", "key", "focus"],
+      "note": "set_key_pressed_fn. The bool is not documented as press versus repeat; local carb.input has KEY_REPEAT."
+    },
+    {
+      "id": "omni-ui-intslider",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/omni.ui/omni.ui.IntSlider.html",
+      "use_when": ["slider", "intslider"],
+      "note": "Documents the slider and mouse callbacks. Arrow stepping is not specified. Confirm in the local stub before relying on it."
+    },
+    {
+      "id": "extensions-index",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/extensions/latest/index.html",
+      "use_when": ["extension catalog", "which extension", "omni.kit"],
+      "skip_when": ["arrow", "slider", "timeline"],
+      "note": "Catalog of extensions. It does not define Timeline arrow behavior."
+    },
+    {
+      "id": "nvidia-omniverse-org",
+      "kind": "repo-index",
+      "url": "https://github.com/NVIDIA-Omniverse",
+      "use_when": ["kit-app-template", "upstream sample", "nvidia-omniverse"],
+      "skip_when": ["arrow", "timeline slider"],
+      "note": "Upstream org. Local read-only checkout is ../v1d_ref. Do not copy it into source/ and do not build the product there."
+    },
+    {
+      "id": "nvidia-skills-index",
+      "kind": "skill-catalog",
+      "url": "https://github.com/NVIDIA/skills/tree/main/skills",
+      "use_when": ["nvidia skill", "which skill", "skill catalog"],
+      "note": "Index of NVIDIA agent skills. Open a skill SKILL.md only after this tool returns that skill's id. Do not vendor the tree."
+    },
+    {
+      "id": "omniverse-cad-to-simready",
+      "kind": "skill",
+      "url": "https://github.com/NVIDIA/skills/blob/main/skills/omniverse-cad-to-simready/SKILL.md",
+      "use_when": ["cad", "simready", "content agents"],
+      "skip_when": ["timeline", "omni.ui", "slider", "arrow", "scrub"],
+      "note": "CAD or mesh to SimReady USD. Not the v1d Kit UI."
+    },
+    {
+      "id": "omniverse-realtime-viewer",
+      "kind": "skill",
+      "url": "https://github.com/NVIDIA/skills/blob/main/skills/omniverse-realtime-viewer/SKILL.md",
+      "use_when": ["ovui", "ovrtx", "realtime viewer", "webrtc viewer"],
+      "skip_when": ["omni.ui", "timeline", "v1d"],
+      "note": "OVRTX / ovui viewer apps. A different UI stack from Kit omni.ui."
+    },
+    {
+      "id": "omniverse-usd-performance-tuning",
+      "kind": "skill",
+      "url": "https://github.com/NVIDIA/skills/blob/main/skills/omniverse-usd-performance-tuning/SKILL.md",
+      "use_when": ["usd performance", "usd optimize", "scene optimizer"],
+      "skip_when": ["timeline", "omni.ui", "slider", "arrow"],
+      "note": "USD stage optimize. For Composer stage work, usd_composer_mcp remains the tool."
+    },
+    {
+      "id": "devguide-keyboard",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/dev-guide/latest/programmer_ref/input-devices/keyboard.html",
+      "use_when": ["arrow key", "keyboard", "key repeat", "key_press", "key_release"],
+      "note": "Worked example of KEY_PRESS, KEY_REPEAT, and KEY_RELEASE via subscribe_to_keyboard_events. Local carb/input.pyi wins. Lookup a symbol before calling it."
+    },
+    {
+      "id": "kit110-keyboard-event-type",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/kit-manual/110.1.0/carb.input/carb.input.KeyboardEventType.html",
+      "use_when": ["keyboard", "key repeat", "key_press", "key_release"],
+      "note": "Kit manual 110.1.0, the closest public pin to this app's Kit 110.3. KEY_PRESS, KEY_REPEAT, KEY_RELEASE, CHAR."
+    },
+    {
+      "id": "kit110-keyboard-input",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/kit-manual/110.1.0/carb.input/carb.input.KeyboardInput.html",
+      "use_when": ["arrow", "keyboardinput", "left", "right"],
+      "note": "Names LEFT and RIGHT. Kit manual 110.1.0."
+    },
+    {
+      "id": "kit110-iinput",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/kit-manual/110.1.0/carb.input/carb.input.IInput.html",
+      "use_when": ["keyboard", "subscribe_to_keyboard_events", "key repeat"],
+      "note": "subscribe_to_keyboard_events and unsubscribe_to_keyboard_events. Lookup before a new call."
+    },
+    {
+      "id": "omni-appwindow-default",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/omni.appwindow/latest/omni.appwindow/omni.appwindow.get_default_app_window.html",
+      "use_when": ["appwindow", "keyboard"],
+      "note": "get_default_app_window(). omni.appwindow 1.2.2 is in this Kit build. Pair with get_keyboard."
+    },
+    {
+      "id": "omni-appwindow-keyboard",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/omni.appwindow/latest/omni.appwindow/omni.appwindow.IAppWindow.html",
+      "use_when": ["appwindow", "get_keyboard", "keyboard"],
+      "note": "IAppWindow.get_keyboard returns the carb.input keyboard for that window."
+    },
+    {
+      "id": "kit-update-event",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/dev-guide/latest/python-snippets/events/subscribe-app-update-event.html",
+      "use_when": ["playback", "hold", "fps", "update event", "tick"],
+      "note": "App update payload key dt is the frame delta. Preview already subscribes. Do not add a second tick_playback caller."
+    },
+    {
+      "id": "omni-kit-hotkeys",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/omni.kit.hotkeys.core/latest/USAGE.html",
+      "use_when": ["hotkey", "shortcut"],
+      "skip_when": ["timeline", "slider", "hold", "playback", "arrow", "fps"],
+      "note": "One-shot press or release action. Installed as omni.kit.hotkeys.core 1.4.0. Not a clip-fps play clock."
+    },
+    {
+      "id": "omni-ui-byte-image",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/omni.ui/omni.ui.ByteImageProvider.html",
+      "use_when": ["preview", "byteimage", "set_bytes_data_from_gpu", "gpu upload"],
+      "note": "Preview display path. Confirm the call in the local omni.ui stub."
+    },
+    {
+      "id": "omni-ui-dynamic-texture",
+      "kind": "doc",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/omni.ui/omni.ui.DynamicTextureProvider.html",
+      "use_when": ["dynamic texture", "rtx material", "dynamic://"],
+      "skip_when": ["timeline", "preview", "slider"],
+      "note": "RTX material URI. v1d preview uses ByteImageProvider, not this."
+    },
+    {
+      "id": "nvdec-programming-guide",
+      "kind": "doc",
+      "url": "https://docs.nvidia.com/video-technologies/video-codec-sdk/13.1/nvdec-video-decoder-api-prog-guide/",
+      "use_when": ["nvdec", "cuvid", "decode", "decoder"],
+      "note": "Official NVDEC API. One decoder in-process. Do not add a second decode API or an FFmpeg decode path."
+    },
+    {
+      "id": "nv-codec-headers",
+      "kind": "doc",
+      "url": "https://github.com/FFmpeg/nv-codec-headers",
+      "use_when": ["ffnvcodec", "nvcuvid", "dynlink", "cuvid"],
+      "note": "Upstream ffnvcodec headers. Call the headers this build already uses, not GitHub master. Do not link FFmpeg libraries."
+    },
+    {
+      "id": "cuda-primary-context",
+      "kind": "doc",
+      "url": "https://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__PRIMARY__CTX.html",
+      "use_when": ["cuda", "primary context", "cudeviceprimaryctxretain"],
+      "note": "cuDevicePrimaryCtxRetain. The retained context is not pushed on the stack. No cudart, no cublas."
+    },
+    {
+      "id": "cuda-module-load",
+      "kind": "doc",
+      "url": "https://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__MODULE.html",
+      "use_when": ["cuda", "fatbin", "cumoduleloaddata", "kernel"],
+      "note": "cuModuleLoadData accepts a fatbin."
+    },
+    {
+      "id": "cuda-driver-api",
+      "kind": "doc",
+      "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/03-advanced/driver-api.html",
+      "use_when": ["cuda", "driver api", "cudart"],
+      "note": "Driver and runtime share the primary context. v1d stays on the driver API and does not link cudart or cublas."
+    }
+  ]
+}

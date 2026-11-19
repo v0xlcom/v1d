@@ -1,0 +1,77 @@
+[
+  {
+    "dock_id": 3358485147,
+    "children": [
+      {
+        "dock_id": 1,
+        "position": "TOP",
+        "children": [
+          {
+            "dock_id": 3,
+            "position": "LEFT",
+            "children": [
+              {
+                "title": "Upscaler",
+                "width": 573.0,
+                "height": 801.0,
+                "position_x": 182.0,
+                "position_y": 366.0,
+                "dock_id": 3,
+                "visible": true,
+                "selected_in_dock": false
+              },
+              {
+                "title": "Preview",
+                "width": 573.0,
+                "height": 801.0,
+                "position_x": 0.0,
+                "position_y": 30.0,
+                "dock_id": 3,
+                "visible": true,
+                "selected_in_dock": true,
+                "dock_tab_bar_visible": true,
+                "dock_tab_bar_enabled": true
+              }
+            ]
+          },
+          {
+            "dock_id": 4,
+            "position": "RIGHT",
+            "children": [
+              {
+                "title": "Console",
+                "width": 508.0,
+                "height": 801.0,
+                "position_x": 577.0,
+                "position_y": 30.0,
+                "dock_id": 4,
+                "visible": true,
+                "selected_in_dock": true,
+                "dock_tab_bar_visible": true,
+                "dock_tab_bar_enabled": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "dock_id": 2,
+        "position": "BOTTOM",
+        "children": [
+          {
+            "title": "Timeline",
+            "width": 1085.0,
+            "height": 458.0,
+            "position_x": 0.0,
+            "position_y": 835.0,
+            "dock_id": 2,
+            "visible": true,
+            "selected_in_dock": true,
+            "dock_tab_bar_visible": true,
+            "dock_tab_bar_enabled": true
+          }
+        ]
+      }
+    ]
+  }
+]

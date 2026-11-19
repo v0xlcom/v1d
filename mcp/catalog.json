@@ -1,0 +1,29 @@
+{
+  "v1d": {
+    "workspace": ".",
+    "mcp_id": "v1d_mcp",
+    "slash": "/v1d_mcp",
+    "spec": "_archive/PLAN_02_MCP.md"
+  },
+  "companions": {
+    "inkscape_mcp": {
+      "use_for": "Inkscape trace/export",
+      "workspace_hint": ""
+    },
+    "open_chat_cut_mcp": {
+      "use_for": "OpenChatCut build/verify",
+      "workspace_hint": "../v1d_ref/openchatcut"
+    },
+    "kdenlive_mcp": {
+      "use_for": "Kdenlive prefix build",
+      "workspace_hint": "../v1d_ref/kdenlive"
+    },
+    "usd_composer_mcp": {
+      "use_for": "USD stage, Composer Kit, OpenUSD CLI",
+      "workspace_hint": ""
+    }
+  },
+  "reference_read_only": "../v1d_ref",
+  "sources_index": "mcp/sources.json",
+  "sources_tool": "v1d_sources"
+}

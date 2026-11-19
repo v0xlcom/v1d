@@ -1,0 +1,214 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
+"""Headless v1d commands (D7). JSON on stdout: {\"ok\": bool, \"summary\": ...}"""
+
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+REL = ROOT / "_build/linux-x86_64/release"
+EXT = REL / "exts/v1d.cor"
+KIT_PY = REL / "kit/python/bin/python3"
+
+
+def _reexec_kit_python() -> None:
+    if not KIT_PY.is_file():
+        return
+    if Path(sys.executable).resolve() == KIT_PY.resolve():
+        return
+    env = os.environ.copy()
+    env["LD_LIBRARY_PATH"] = f"{REL}/kit:{env.get('LD_LIBRARY_PATH', '')}"
+    env["PYTHONPATH"] = f"{EXT}:{env.get('PYTHONPATH', '')}"
+    env.setdefault("V1D_ROOT", str(ROOT))
+    os.execve(str(KIT_PY), [str(KIT_PY), str(Path(__file__).resolve()), *sys.argv[1:]], env)
+
+
+_reexec_kit_python()
+
+if EXT.is_dir():
+    sys.path.insert(0, str(EXT))
+os.environ.setdefault("LD_LIBRARY_PATH", f"{REL}/kit:{os.environ.get('LD_LIBRARY_PATH', '')}")
+
+from v1d.ngn.headless_serve import rpc, serve_main  # noqa: E402
+from v1d.ngn.paths import serve_socket_path  # noqa: E402
+from v1d.ngn.fixtures import S4_FIXTURE_CHOICES, fixture_path  # noqa: E402
+
+
+def _out(ok: bool, summary: str | dict) -> int:
+    print(json.dumps({"ok": ok, "summary": summary}))
+    return 0 if ok else 1
+
+
+def _serve_running() -> bool:
+    return serve_socket_path().exists()
+
+
+def _rpc_or_fail(method: str, **args) -> dict:
+    try:
+        return rpc(method, **args)
+    except FileNotFoundError as exc:
+        return {"ok": False, "summary": str(exc)}
+
+
+def _cmd_help() -> int:
+    rows = [
+        "serve",
+        "open PATH",
+        "reload",
+        "scrub begin",
+        "scrub FRAME",
+        "scrub end FRAME",
+        "play forward [--for-ms N]",
+        "play back [--for-ms N]",
+        "play stop",
+        "status",
+        "set cuda-device N",
+        "set cache-mb N",
+        "set output W H",
+        "fixture list",
+        "fixture set NAME",
+    ]
+    return _out(True, {"commands": rows})
+
+
+def _parse_for_ms(argv: list[str], start: int) -> tuple[list[str], int | None]:
+    out = list(argv)
+    ms: int | None = None
+    if start < len(out) and out[start] == "--for-ms":
+        if start + 1 >= len(out):
+            return out, None
+        ms = int(out[start + 1])
+        del out[start : start + 2]
+    return out, ms
+
+
+def _cmd_fixture(argv: list[str]) -> int:
+    if len(argv) < 2:
+        return _out(False, "usage: fixture list|set NAME")
+    sub = argv[1]
+    if sub == "list":
+        return _out(
+            True,
+            {"fixtures": [{"name": n, "label": lb} for n, lb in S4_FIXTURE_CHOICES]},
+        )
+    if sub == "set" and len(argv) >= 3:
+        name = argv[2]
+        path = fixture_path(name)
+        if not path.is_file():
+            return _out(False, f"missing {path}")
+        if _serve_running():
+            resp = _rpc_or_fail("fixture", sub="set", name=name)
+            return _out(bool(resp.get("ok")), resp.get("summary", resp))
+        return _out(True, {"fixture": name, "path": str(path), "note": "start serve to open"})
+    return _out(False, "usage: fixture list|set NAME")
+
+
+def _cmd_serve(argv: list[str]) -> int:
+    if _serve_running():
+        return _out(False, f"already running ({serve_socket_path()})")
+    dev = int(os.environ.get("V1D_CUDA_DEVICE", "0"))
+    cache = int(os.environ.get("V1D_CACHE_MB", "0"))
+    if "--foreground" in argv or "-f" in argv:
+        return serve_main(dev, cache)
+    env = os.environ.copy()
+    env.setdefault("PYTHONPATH", str(EXT))
+    rel = ROOT / "_build/linux-x86_64/release"
+    env["LD_LIBRARY_PATH"] = f"{rel}/kit:{env.get('LD_LIBRARY_PATH', '')}"
+    py = rel / "kit/python/bin/python3"
+    if not py.is_file():
+        py = Path(sys.executable)
+    proc = subprocess.Popen(
+        [str(py), "-m", "v1d.ngn.headless_serve"],
+        env=env,
+        cwd=str(ROOT),
+        start_new_session=True,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    sock = serve_socket_path()
+    for _ in range(50):
+        if sock.exists():
+            break
+        time.sleep(0.1)
+    else:
+        return _out(False, "serve failed to start (no socket)")
+    return _out(True, {"pid": proc.pid, "socket": str(sock)})
+
+
+def main(argv: list[str]) -> int:
+    if len(argv) < 2 or argv[1] in ("-h", "--help", "help"):
+        return _cmd_help()
+    cmd = argv[1]
+
+    if cmd == "serve":
+        return _cmd_serve(argv[1:])
+
+    if cmd == "fixture":
+        return _cmd_fixture(argv[1:])
+
+    if cmd == "open" and len(argv) >= 3:
+        path = Path(argv[2])
+        if not path.is_file():
+            return _out(False, f"missing {path}")
+        resp = _rpc_or_fail("open", path=str(path.resolve()))
+        return _out(bool(resp.get("ok")), resp.get("summary", resp))
+
+    if cmd == "reload":
+        resp = _rpc_or_fail("reload")
+        return _out(bool(resp.get("ok")), resp.get("summary", resp))
+
+    if cmd == "status":
+        resp = _rpc_or_fail("status")
+        return _out(bool(resp.get("ok")), resp.get("summary", resp))
+
+    if cmd == "scrub" and len(argv) >= 3:
+        sub = argv[2]
+        if sub == "begin":
+            resp = _rpc_or_fail("scrub", sub="begin")
+            return _out(bool(resp.get("ok")), resp.get("summary", resp))
+        if sub == "end" and len(argv) >= 4:
+            resp = _rpc_or_fail("scrub", sub="end", frame=int(argv[3]))
+            return _out(bool(resp.get("ok")), resp.get("summary", resp))
+        try:
+            frame = int(sub)
+        except ValueError:
+            return _out(False, "usage: scrub begin|FRAME|end FRAME")
+        resp = _rpc_or_fail("scrub", sub="", frame=frame)
+        return _out(bool(resp.get("ok")), resp.get("summary", resp))
+
+    if cmd == "play" and len(argv) >= 3:
+        sub = argv[2]
+        rest, for_ms = _parse_for_ms(argv[3:], 0)
+        if sub in ("forward", "back", "stop"):
+            args = {"sub": sub}
+            if for_ms is not None:
+                args["for_ms"] = for_ms
+            resp = _rpc_or_fail("play", **args)
+            return _out(bool(resp.get("ok")), resp.get("summary", resp))
+        return _out(False, "usage: play forward|back|stop [--for-ms N]")
+
+    if cmd == "set" and len(argv) >= 4:
+        sub = argv[2]
+        if sub == "cuda-device":
+            resp = _rpc_or_fail("set", sub="cuda-device", n=int(argv[3]))
+            return _out(bool(resp.get("ok")), resp.get("summary", resp))
+        if sub == "cache-mb":
+            resp = _rpc_or_fail("set", sub="cache-mb", n=int(argv[3]))
+            return _out(bool(resp.get("ok")), resp.get("summary", resp))
+        if sub == "output" and len(argv) >= 5:
+            resp = _rpc_or_fail("set", sub="output", w=int(argv[3]), h=int(argv[4]))
+            return _out(bool(resp.get("ok")), resp.get("summary", resp))
+        return _out(False, "usage: set cuda-device N | set cache-mb N | set output W H")
+
+    return _out(False, f"unknown or incomplete command: {cmd} (see: tools/v1d help)")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))

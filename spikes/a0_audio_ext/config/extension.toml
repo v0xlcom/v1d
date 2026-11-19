@@ -1,0 +1,15 @@
+[package]
+title = "a0_audio_ext"
+version = "0.0.1"
+description = "PLAN_07 A0 spike: carb.audio streaming from open clip (dev only)"
+category = "v1d"
+
+[dependencies]
+"omni.kit.uiapp" = {}
+
+[[python.module]]
+name = "a0_audio_ext"
+
+[settings]
+exts."a0_audio_ext".clip = ""
+exts."a0_audio_ext".play_seconds = 5.0

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operations": {
+    "cuda_probe": {
+      "description": "nvcc --version and nvidia-smi (no kernel launch)",
+      "args": {}
+    },
+    "repo_build": {
+      "description": "./repo.sh build -r at workspace root",
+      "args": {}
+    },
+    "headless_import": {
+      "description": "Kit Python imports v1d.ngn._scrub and prints __version__",
+      "args": {}
+    },
+    "run_tests": {
+      "description": "./tools/run_tests.sh -v",
+      "args": {
+        "quick_c4": { "type": "boolean", "optional": true, "default": false },
+        "gpu": { "type": "boolean", "optional": true, "default": true }
+      }
+    },
+    "check_licenses": {
+      "description": "./tools/check_licenses.sh",
+      "args": {}
+    },
+    "kit_selftest": {
+      "description": "./tools/run_kit_selftest.sh (GPU + display)",
+      "args": {}
+    }
+  }
+}
